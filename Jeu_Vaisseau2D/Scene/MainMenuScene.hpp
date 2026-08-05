@@ -45,18 +45,6 @@ public:
 		);
 		eventManager.subscribe(SDL_MOUSEMOTION, (Button*)visualComponents["playButton"]);
 		eventManager.subscribe(SDL_MOUSEBUTTONDOWN, (Button*)visualComponents["playButton"]);
-    
-		visualComponents["quitButton"] = new Button("Quit",
-			font,
-			engine.assetManager.getAsset<Color*>("BlackPure")->getSDLColor(),
-			Vector2i(engine.getWidth() - 30, 10),
-			quitButtonSize,
-			quitButtonColor,
-			quitButtonHoverColor,
-			QUIT_BUTTON_CLICK
-		);
-		eventManager.subscribe(SDL_MOUSEMOTION, (Button*)visualComponents["quitButton"]);
-		eventManager.subscribe(SDL_MOUSEBUTTONDOWN, (Button*)visualComponents["quitButton"]);
 	}
 
 	/// @brief Décharge la scène
@@ -81,7 +69,7 @@ public:
 					case PLAY_BUTTON_CLICK:
 						engine.sceneManager.transitScene("GameScene");
 						break;
-					case QUIT_BUTTON_CLICK:
+					case QUIT_APPLICATION:
 						Event::push(SDL_QUIT, false);
 						break;
 				}
