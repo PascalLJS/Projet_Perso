@@ -40,7 +40,7 @@ public :
 	Engine() {
 		TTF_Init();
 		isUp = !SDL_Init(SDL_INIT_VIDEO);
-		windowSize.x = 800, windowSize.y = 600;
+		windowSize.x = 950, windowSize.y = 540;
 		createWindow();
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_NORMAL_ARRAY);

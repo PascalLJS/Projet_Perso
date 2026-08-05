@@ -46,3 +46,4 @@ fontArrow60 Ressources/Fonts/NotoSansSymbols2-Regular.ttf 60
 fontArrow72 Ressources/Fonts/NotoSansSymbols2-Regular.ttf 72
 
 Texture:
+InstructionL1 Ressources/Textures/Info_Level1.png
