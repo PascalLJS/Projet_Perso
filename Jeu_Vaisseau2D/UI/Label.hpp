@@ -19,6 +19,7 @@ protected:
 	SDL_Color textColor; ///< La couleur du texte lors du rendu
 	uint32_t textureId; ///< L'identifiant de la texture associée avec l'étiquette
 	std::string text; ///< Le texte dans le Label
+	Vector2i labelRealSize;
 
 	/// @brief Redessine le texte sur la texture
 	virtual void renderText() {
@@ -42,7 +43,7 @@ public:
 	/// @param fontResource La ressource de police de caractère
 	/// @param startText (Optionnel) Le texte de départ de l'étiquette
 	Label(
-		Vector2i pos, 
+		Vector2i pos,
 		Font* fontResource, 
 		std::string startText = "Label", 
 		SDL_Color startColor = Engine::getInstance().assetManager.getAsset<Color*>("GrayDefault2")->getSDLColor()
@@ -97,6 +98,14 @@ public:
 			textColor = color;
 			renderText();
 		}
+	}
+
+	void setRealSize(Vector2i realSize){
+		this->labelRealSize = realSize;
+	}
+
+	Vector2i getRealSize(){
+		return labelRealSize;
 	}
 
 	/// @brief Dessiner l'étiquette sur la fenêtre

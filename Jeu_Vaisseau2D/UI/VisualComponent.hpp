@@ -38,6 +38,10 @@ public:
 	/// @brief Change la position du composant visuel
 	/// @param position Vecteur de la nouvelle position
 	void setPosition(Vector2i position){
+		if(position.x < 0)
+			position.x = 0;
+		if(position.y < 0)
+			position.y = 0;
 		this->pos = position;
 	}
 

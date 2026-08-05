@@ -28,7 +28,7 @@ private :
 	/// @brief Crée la fenêtre
 	/// @param config Contient les paramètres de configuration
 	void createWindow() {
-  	sdlWindow = SDL_CreateWindow("Vaisseau", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_OPENGL);
+  	sdlWindow = SDL_CreateWindow("The Broken Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_OPENGL);
 		glContext = SDL_GL_CreateContext(sdlWindow);
 	}
 
@@ -74,20 +74,15 @@ public :
 		SDL_GL_SwapWindow(sdlWindow);
 	}
 
+	bool isInitialyzed() {
+		return false;
+	}
+
 	/// @brief Lance la boucle de jeu
 	void start() {
 		while(isUp) {
 			while(Event::poll()) {
 				switch(Event::getType()) {
-					case SDL_USEREVENT:
-						if (Event::getUserEventCode() == Events::QUIT_APPLICATION) {
-							SDL_DestroyWindow(sdlWindow); sdlWindow = nullptr;
-							isUp = false;
-						}
-						else
-							sceneManager.getCurrentScene().handleEvent();
-						break;
-
 					case SDL_QUIT :
 						isUp = false;
 						break;

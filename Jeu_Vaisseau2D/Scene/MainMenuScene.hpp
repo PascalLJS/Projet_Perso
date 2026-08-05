@@ -24,10 +24,7 @@ public:
 		Font* font = engine.assetManager.getAsset<Font*>("fontBold32");
 		SDL_Color menuButtonColor = engine.assetManager.getAsset<Color *>("GrayDark1")->getSDLColor();
 		SDL_Color menuButtonHoverColor = engine.assetManager.getAsset<Color *>("GrayLight2")->getSDLColor();
-		SDL_Color quitButtonColor = engine.assetManager.getAsset<Color *>("RedDefault")->getSDLColor();
-		SDL_Color quitButtonHoverColor = engine.assetManager.getAsset<Color *>("RedLight")->getSDLColor();
 		Vector2i menuButtonSize = Vector2i(125, 50);
-		Vector2i quitButtonSize = Vector2i(25, 25);
 
 		projection.loadProjection(Engine::getInstance().getWidth(), Engine::getInstance().getHeight());
 		glMatrixMode(GL_PROJECTION);
@@ -43,13 +40,19 @@ public:
 			menuButtonHoverColor,
 			PLAY_BUTTON_CLICK
 		);
+
 		eventManager.subscribe(SDL_MOUSEMOTION, (Button*)visualComponents["playButton"]);
 		eventManager.subscribe(SDL_MOUSEBUTTONDOWN, (Button*)visualComponents["playButton"]);
 	}
 
 	/// @brief Décharge la scène
 	void unload() {
-		
+		eventManager.unsubscribe(SDL_MOUSEMOTION, (Button*)visualComponents["playButton"]);
+		eventManager.unsubscribe(SDL_MOUSEBUTTONDOWN, (Button*)visualComponents["playButton"]);
+
+		for (auto it : visualComponents)
+			delete it.second;
+		visualComponents.clear();
 	}
 
 	/// @brief Gère le rendu de la scène
@@ -67,14 +70,20 @@ public:
 			case SDL_USEREVENT:
 				switch (Event::getUserEventCode()) {
 					case PLAY_BUTTON_CLICK:
+						if(!engine.isInitialyzed()){
+							visualComponents["playButton"]->setPosition(Vector2i(rand() % engine.getWidth() - visualComponents["playButton"]->getSize().x, rand() % engine.getHeight() - visualComponents["playButton"]->getSize().y));
+							((Button*)visualComponents["playButton"])->updateLabelPosition();
+							break;
+						}				
 						engine.sceneManager.transitScene("GameScene");
 						break;
-					case QUIT_APPLICATION:
-						Event::push(SDL_QUIT, false);
-						break;
-				}
-				break;
-
+			}
+			case SDL_KEYDOWN:
+					switch (Event::getKeyCode()) {
+						case SDLK_ESCAPE:
+							Event::push(SDL_QUIT, false);
+							break;
+			}
 			default:
 				eventManager.notify(Event::getType());
 		}

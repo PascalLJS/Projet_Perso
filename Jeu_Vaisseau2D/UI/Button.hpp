@@ -40,7 +40,7 @@ public:
 
         Vector2i labelPosition = MathUtils::getCenteredPosition(size.x, size.y, labelRealSize.x, labelRealSize.y);
         this->label = new Label(Vector2i(pos.x + labelPosition.x, pos.y + labelPosition.y), labelFont, text, labelColor);
-
+				this->label->setRealSize(labelRealSize);
         delete tempLabel;
 
         this->color = color;
@@ -92,5 +92,10 @@ public:
 		glEnable(GL_TEXTURE_2D);
 
 		this->label->render();
+	}
+
+	void updateLabelPosition(){
+		Vector2i centered = MathUtils::getCenteredPosition(this->getSize().x, this->getSize().y, this->label->getRealSize().x, this->label->getRealSize().y);
+		this->label->setPosition(Vector2i(this->getPos().x + centered.x, this->getPos().y + centered.y));
 	}
 };

@@ -3,6 +3,5 @@
 /// @brief Événements personnalisés
 /// @enum Events
 enum Events {
-	PLAY_BUTTON_CLICK = 32768,
-	QUIT_APPLICATION
+	PLAY_BUTTON_CLICK = 32768
 };
