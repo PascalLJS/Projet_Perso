@@ -1,0 +1,3 @@
+First Flag: FLAG{7GJTP-YJLAI-KJHAKI}
+
+Second Flag: 
