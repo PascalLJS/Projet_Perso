@@ -34,6 +34,22 @@ public:
     return Vector2i(surfaceWidth / 2 - componentWidth / 2, surfaceHeight / 2 - componentHeight / 2);
 	}
 
+	/// @brief Calcule la position centrée d'un composant sur une surface donnée.
+	/// @param surfaceWidth Largeur de la surface sur laquelle centrer le composant.
+	/// @param componentWidth Largeur du composant à centrer.
+	/// @return La valeur X représentant la position centrée du composant.
+	static int getCenteredPositionX(unsigned int surfaceWidth, unsigned int componentWidth) {
+    return int(surfaceWidth / 2 - componentWidth / 2);
+	}
+
+	/// @brief Calcule la position centrée d'un composant sur une surface donnée.
+	/// @param surfaceHeight Hauteur de la surface sur laquelle centrer le composant.
+	/// @param componentHeight Hauteur du composant à centrer.
+	/// @return La valeur Y représentant la position centrée du composant.
+	static int getCenteredPositionY(unsigned int surfaceHeight, unsigned int componentHeight) {
+    return int(surfaceHeight / 2 - componentHeight / 2);
+	}
+
 	/// @brief Calcule la position centrée en X d'un composant sur une surface donnée.
 	/// @param surfaceWidth Largeur de la surface sur laquelle centrer le composant.
 	/// @param componentWidth Largeur du composant à centrer.

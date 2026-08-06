@@ -73,7 +73,7 @@ public:
 			case SDL_USEREVENT:
 				switch (Event::getUserEventCode()) {
 					case PLAY_BUTTON_CLICK:
-						if(!engine.isInitialyzed()){
+						if(engine.isInitialyzed()){
 							visualComponents["100playButton"]->setPosition(Vector2i(rand() % engine.getWidth() - visualComponents["100playButton"]->getSize().x, rand() % engine.getHeight() - visualComponents["100playButton"]->getSize().y));
 							((Button*)visualComponents["100playButton"])->updateLabelPosition();
 							break;
