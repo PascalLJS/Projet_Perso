@@ -2,10 +2,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-#include "../Events/Event.hpp"
-#include "../DP/Observer.hpp"
+
 #include "VisualComponent.hpp"
-#include "Label.hpp"
 #include "../Math/Vector2i.hpp"
 #include "../Math/MathUtils.hpp"
 
@@ -30,6 +28,22 @@ public:
   }
 
   ~Line(){}
+
+  Vector2i getPosStart(){
+    return this->startOfLine;
+  }
+
+  Vector2i getPosEnd(){
+    return this->endOfLine;
+  }
+
+  void setPosStart(Vector2i pos){
+    this->startOfLine = pos;
+  }
+
+  void setPosEnd(Vector2i pos){
+    this->endOfLine = pos;
+  }
 
   virtual void render() {
 

@@ -26,17 +26,20 @@ public:
 		originalSize(size) 
 	{}
 
+	~Image() {}
+
 	/// @brief Rendre l'image à l'écran.
 	virtual void render() {
 		if (texture) {
 			texture->bind();
+			glEnable(GL_TEXTURE_2D);
 			glBegin(GL_QUADS);
-				glColor4ub(255,255,255,255);
 				glTexCoord2f(0,0);glVertex2i(pos.x, pos.y);
 				glTexCoord2f(1,0);glVertex2i(pos.x + size.x, pos.y);
 				glTexCoord2f(1,1);glVertex2i(pos.x + size.x, pos.y + size.y);
 				glTexCoord2f(0,1);glVertex2i(pos.x, pos.y + size.y);
-				glEnd();
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
 		}	
 	}
 

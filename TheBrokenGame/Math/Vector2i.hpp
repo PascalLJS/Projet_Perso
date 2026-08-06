@@ -41,4 +41,12 @@ public:
     Vector2i operator-(Vector2i& other) {
         return Vector2i(x - other.x, y - other.y);
     }
+
+    bool operator==(Vector2i& other) {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(Vector2i& other) {
+        return !(*this == other);
+    }
 };

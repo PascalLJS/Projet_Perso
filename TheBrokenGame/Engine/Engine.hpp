@@ -74,7 +74,7 @@ public :
 		SDL_GL_SwapWindow(sdlWindow);
 	}
 
-	bool isInitialyzed() {
+	bool isAllowToPass() {
 		return false;
 	}
 
