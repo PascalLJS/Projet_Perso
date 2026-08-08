@@ -96,7 +96,6 @@ public :
 					case SDL_QUIT :
 						isUp = false;
 						break;
-
 					default:
 						sceneManager.getCurrentScene().handleEvent();
 						break;

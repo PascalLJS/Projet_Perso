@@ -18,6 +18,7 @@ private:
 	Engine &engine = Engine::getInstance(); ///< Instance du moteur
 	Matrix projection;
 	std::map<string, VisualComponent*> visualComponents;
+	std::map<string, AnimatedSprite*> animatedVisuals;
 	
 public:
 	/// @brief Charge la scène
@@ -29,7 +30,7 @@ public:
 		glMultMatrixf(projection);
 
 		visualComponents["1Map"] = new Image(Vector2i(0,0), Vector2i(Engine::getInstance().getWidth(), Engine::getInstance().getHeight()),Engine::getInstance().assetManager.getAsset<Texture*>("Map"));
-		visualComponents["2Santa"] = new AnimatedSprite(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2i(0,0), Vector2i(64,64));
+		animatedVisuals["2Santa"] = new AnimatedSprite(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2f(0.0,0.0), Vector2i(64,64));
 
 	}
 
@@ -43,6 +44,8 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT);
 		for (auto it : visualComponents)
 			it.second->render();
+		for (auto it : animatedVisuals)
+			it.second->render();
 		Engine::getInstance().swapWindow();
 	}
 
@@ -50,10 +53,18 @@ public:
 	void handleEvent() {
 		SDL_Event currentEvent;
 		currentEvent.type = Event::getType();
-
 		switch (Event::getType()) {
 			case SDL_MOUSEMOTION:
+				break;
+			case SDL_KEYDOWN:
+				switch (Event::getKeyCode()){
+				case SDLK_ESCAPE:
+					Event::push(SDL_QUIT, false);
+					break;
 				
+				default:
+					break;
+				}
 				break;
 		}
 	}
@@ -61,7 +72,8 @@ public:
 	/// @brief Gère les changements de la scène
 	/// @param deltaTime Delta temps, en seconde, entre chaque rafraîchissement
 	void handleUpdate(double deltaTime) {
-		
+		for (auto it : animatedVisuals)
+			it.second->update(deltaTime);
 	}
 	
 };
