@@ -57,6 +57,16 @@ public :
 		SDL_GL_DeleteContext(glContext);
 	}
 
+	void resetSizeWindow(Vector2i size) {
+		setWindowSize(size);
+		SDL_SetWindowSize(sdlWindow, size.x, size.y);
+		glViewport(0, 0, size.x, size.y);
+	}
+
+	void setWindowSize(Vector2i size) {
+		this->windowSize = size;
+	}
+
 	/// @brief Obtient la largeur de la fenêtre
 	/// @return La largeur en int
 	int getWidth() {

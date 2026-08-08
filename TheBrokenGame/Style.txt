@@ -48,3 +48,5 @@ fontArrow72 Ressources/Fonts/NotoSansSymbols2-Regular.ttf 72
 Texture:
 InstructionL1 Ressources/Textures/Info_Level1.png
 InstructionFlag1 Ressources/Textures/Info_Flag1.png
+Santa Ressources/Textures/Santa.png
+Map Ressources/Textures/Map.png
