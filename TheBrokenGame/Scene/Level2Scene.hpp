@@ -30,7 +30,7 @@ public:
 		glMultMatrixf(projection);
 
 		visualComponents["1Map"] = new Image(Vector2i(0,0), Vector2i(Engine::getInstance().getWidth(), Engine::getInstance().getHeight()),Engine::getInstance().assetManager.getAsset<Texture*>("Map"));
-		animatedVisuals["2Santa"] = new AnimatedSprite(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2f(0.0,0.0), Vector2i(64,64));
+		animatedVisuals["2Santa"] = new AnimatedSprite(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2f(0.0,0.0), Vector2i(96,96));
 
 	}
 
