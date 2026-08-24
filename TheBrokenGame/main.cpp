@@ -8,7 +8,7 @@
 #include "Scene/FlagLevel2Scene.hpp"
 #include "Assets/Style.hpp"
 
-int main(int argc, char *argv[]) { 
+int main(int argc, char *argv[]) {
 	Engine &engine = Engine::getInstance();
 	Style style{engine.assetManager};
 

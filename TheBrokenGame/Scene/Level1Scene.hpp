@@ -68,12 +68,11 @@ public:
 
 	/// @brief Gère les événements de la scène
 	void handleEvent() {
-	Engine& engine = Engine::getInstance();
 		switch (Event::getType()) {
 			case SDL_USEREVENT:
 				switch (Event::getUserEventCode()) {
 					case PLAY_BUTTON_CLICK:
-						if(engine.isAllowToPass()){
+						if(engine.isAllowToPass()) {
 							visualComponents["100playButton"]->setPosition(Vector2i(rand() % engine.getWidth() - visualComponents["100playButton"]->getSize().x, rand() % engine.getHeight() - visualComponents["100playButton"]->getSize().y));
 							((Button*)visualComponents["100playButton"])->updateLabelPosition();
 							break;

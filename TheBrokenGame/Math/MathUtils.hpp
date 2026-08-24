@@ -50,6 +50,10 @@ public:
     return int(surfaceHeight / 2 - componentHeight / 2);
 	}
 
+	static Vector2i getCenteredPoint(Vector2i componentSize) {
+		return Vector2i(componentSize.x / 2, componentSize.y / 2);
+	}
+
 	/// @brief Calcule la position centrée en X d'un composant sur une surface donnée.
 	/// @param surfaceWidth Largeur de la surface sur laquelle centrer le composant.
 	/// @param componentWidth Largeur du composant à centrer.

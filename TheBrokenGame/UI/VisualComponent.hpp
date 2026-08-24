@@ -3,13 +3,15 @@
 #include <SDL2/SDL.h>
 
 #include "../Math/Vector2i.hpp"
+#include "../Math/Vector2f.hpp"
 
 /// @class VisualComponent
-/// @brief Classe commune pour tous les composents visuels contenant une position et une taille
+/// @brief Classe commune pour les composents visuels
 class VisualComponent {
 protected:
 	Vector2i pos; ///< position (en haut à gauche) du composant
 	Vector2i size; ///< taille du composant
+	Vector2f posF; ///< position en Float de composant
 
 public:
 	/// @brief Constructeur de composant
@@ -18,6 +20,7 @@ public:
 	VisualComponent(Vector2i pos, Vector2i size) {
 		this->pos = pos;
 		this->size = size;
+		this->posF = Vector2f(0.0, 0.0);
 	}
 
 	/// @brief Constructeur de composant sans taille
@@ -25,6 +28,13 @@ public:
 	VisualComponent(Vector2i pos) {
 		this->pos = pos;
 		this->size = Vector2i(0,0);
+		this->posF = Vector2f(0.0, 0.0);
+	}
+
+	VisualComponent(Vector2f pos, Vector2i size) {
+		this->posF = pos;
+		this->size = size;
+		this->pos = Vector2i(0,0);
 	}
 
 	virtual ~VisualComponent() {}
@@ -33,6 +43,10 @@ public:
 	/// @return Un vecteur de position
 	Vector2i getPos() {
 		return pos;
+	}
+
+	Vector2f getPosF() {
+		return posF;
 	}
 
 	/// @brief Change la position du composant visuel

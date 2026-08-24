@@ -14,8 +14,7 @@ public:
       this->y = y;
     }
 
-    Vector2f& operator+=(const Vector2f& other)
-    {
+    Vector2f& operator+=(const Vector2f& other) {
         x += other.x;
         y += other.y;
         return *this;
@@ -26,5 +25,9 @@ public:
     /// @return Un vecteur résultant de la différence.
     Vector2f operator-=(Vector2f& other) {
         return Vector2f(x - other.x, y - other.y);
+    }
+
+    Vector2f operator+(Vector2f& other) {
+        return Vector2f(x + other.x, y + other.y);
     }
 };

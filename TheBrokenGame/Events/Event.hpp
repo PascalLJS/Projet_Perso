@@ -1,10 +1,6 @@
-/// @file Events/Event.hpp
-/// @brief Fichier contenant la classe Event
-/// @author Dylan Allaire-Drolet
-
 #pragma once
+
 #include <SDL2/SDL.h>
-#include <string>
 
 /// @class Event
 /// @brief Classe qui gère les événements SDL et les événements personnalisés

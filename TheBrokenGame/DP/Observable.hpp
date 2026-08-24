@@ -25,7 +25,7 @@ class Observable {
 		}
 		/// @brief Notifie l'observateur
 		void notify() {
-		for (const auto it : observers)
+			for (const auto it : observers)
 				it->notification();
 		}
 };

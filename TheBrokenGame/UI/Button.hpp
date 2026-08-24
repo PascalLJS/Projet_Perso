@@ -80,7 +80,6 @@ public:
 	void render() override {
 		glDisable(GL_TEXTURE_2D);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 		glBegin(GL_QUADS);
 			glColor4ubv(hover ? (unsigned char*)&hoverColor : (unsigned char*)&color);
 			glVertex2i(this->getPos().x, this->getPos().y);

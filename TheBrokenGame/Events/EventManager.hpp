@@ -1,8 +1,5 @@
-/// @file Events/EventManager.hpp
-/// @brief Fichier contenant la classe EventManager
-/// @author Dylan Allaire-Drolet
-
 #pragma once
+
 #include <SDL2/SDL.h>
 #include "../DP/Observable.hpp"
 #include <map>

@@ -8,8 +8,8 @@
 #include "../Math/MathUtils.hpp"
 
 
-/// @class Button
-/// @brief Représente un bouton
+/// @class Line
+/// @brief Représente un ligne
 class Line : public VisualComponent {
 private:
   Vector2i startOfLine;
@@ -20,7 +20,7 @@ public:
   /// @brief Constructeur
   /// @param pos position de depart
   /// @param end postion de fin
-  /// @param color coleur de la ligne
+  /// @param color couleur de la ligne
   Line(Vector2i pos, Vector2i end, SDL_Color color) : VisualComponent(pos){
     this->startOfLine = pos;
     this->endOfLine = end;

@@ -18,8 +18,8 @@ public:
 	/// @brief Destructeur de la classe AssetManager.
 	/// @details Libère la mémoire allouée pour tous les assets lors de la destruction de l'objet.
 	~AssetManager() {
-		for (std::map<std::string, Asset*>::iterator it = assets.begin(); it != assets.end(); ++it) {
-			delete it->second;
+		for (auto it : assets) {
+			delete it.second;
 		}
 	}
 

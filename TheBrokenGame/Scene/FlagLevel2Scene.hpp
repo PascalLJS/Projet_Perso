@@ -25,7 +25,6 @@ public:
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glMultMatrixf(projection);
-
 	}
 
 	/// @brief Décharge la scène
