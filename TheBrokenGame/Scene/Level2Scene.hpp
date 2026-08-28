@@ -21,9 +21,10 @@ private:
 	Engine &engine = Engine::getInstance(); ///< Instance du moteur
 	Matrix projection;
 	std::map<string, VisualComponent*> visualComponents;
+	std::map<string, AnimatedSprite*> animatedSprites;
+	std::map<string, HitBox*> hitboxes;
 	CollisionManager collisionManager;
-	HitBox *santaHitBox;
-	bool debug = true; //< Put it to True for Debug
+	bool debug = false; //< Put it to True for Debug
 	
 public:
 	/// @brief Charge la scène
@@ -35,9 +36,19 @@ public:
 		glLoadIdentity();
 		glMultMatrixf(projection);
 
-		santaHitBox = new HitBox(SANTA_OUT_OF_MAP);
+		hitboxes["1santaHitBox"] = new HitBox(SANTA_OUT_OF_MAP);
+		hitboxes["2wall0"] = new HitBox(Vector2f(0.0, 105), Vector2i(295, 10), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall1"] = new HitBox(Vector2f(540, 0.0), Vector2i(300, 350), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall2"] = new HitBox(Vector2f(0.0, 530), Vector2i(60, 280), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall3"] = new HitBox(Vector2f(380, 350), Vector2i(500, 75), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall4"] = new HitBox(Vector2f(400, 425), Vector2i(480, 85), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall5"] = new HitBox(Vector2f(480, 510), Vector2i(400, 25), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall6"] = new HitBox(Vector2f(550, 535), Vector2i(330, 15), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall7"] = new HitBox(Vector2f(840, 0.0), Vector2i(440, 110), SANTA_OUT_OF_BOUND);
+		hitboxes["2wall8"] = new HitBox(Vector2f(1180, 110), Vector2i(100, 670), SANTA_OUT_OF_BOUND);
+
 		visualComponents["1Map"] = new Image(Vector2i(0,0), Vector2i(Engine::getInstance().getWidth(), Engine::getInstance().getHeight()),Engine::getInstance().assetManager.getAsset<Texture*>("Map"));
-		visualComponents["2Santa"] = new Santa(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2f(0.0,0.0), Vector2i(96,96), santaHitBox);
+		animatedSprites["2Santa"] = new Santa(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2f(0.0,0.0), Vector2i(96,96), hitboxes["1santaHitBox"]);
 	}
 
 	/// @brief Décharge la scène
@@ -45,6 +56,12 @@ public:
 		for (auto it : visualComponents)
 			delete it.second;
 		visualComponents.clear();
+		for (auto it : animatedSprites)
+			delete it.second;
+		animatedSprites.clear();
+		for (auto it : hitboxes)
+			delete it.second;
+		hitboxes.clear();
 	}
 
 	/// @brief Gère le rendu de la scène
@@ -52,7 +69,13 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT);
 		for (auto it : visualComponents)
 			it.second->render();
-		//santaHitBox->render();
+
+		for (auto it : animatedSprites)
+			it.second->render();
+
+		if(debug)
+			for (auto it : hitboxes)
+				it.second->render();
 		Engine::getInstance().swapWindow();
 	}
 
@@ -64,20 +87,16 @@ public:
 					case SDLK_ESCAPE:
 						Event::push(SDL_QUIT, false);
 						break;
-					default:
-						break;
 				}
 				break;
 			case SDL_USEREVENT:
 				switch (Event::getUserEventCode()) {
 					case SANTA_OUT_OF_BOUND:
-						dynamic_cast<Santa*>(visualComponents["2Santa"])->repositionSanta();
-							break;
 					case SANTA_OUT_OF_MAP:
-						dynamic_cast<Santa*>(visualComponents["2Santa"])->repositionSantaInsideMap();
+						animatedSprites["2Santa"]->reposition(collisionManager.getPenetration());
 							break;
 					case SANTA_COLIDED_WITH_PRESENT:
-						dynamic_cast<Santa*>(visualComponents["2Santa"])->resetPosition();
+						animatedSprites["2Santa"]->resetPosition();
 							break;
 				}
 		}
@@ -86,6 +105,15 @@ public:
 	/// @brief Gère les changements de la scène
 	/// @param deltaTime Delta temps, en seconde, entre chaque rafraîchissement
 	void handleUpdate(double deltaTime) {
-		dynamic_cast<AnimatedSprite*>(visualComponents["2Santa"])->update(deltaTime);
+		bool isCollisionWithObstacles = false;
+
+		if(!collisionManager.checkOutOfMap(hitboxes["1santaHitBox"], Engine::getInstance().getSize(), animatedSprites["2Santa"]->getDirection())) {
+			for(auto it = ++hitboxes.begin(); it != hitboxes.end(); ++it)
+				if(collisionManager.checkCollision(hitboxes["1santaHitBox"], it->second, animatedSprites["2Santa"]->getDirection()))
+					isCollisionWithObstacles = true;
+			
+			if(!isCollisionWithObstacles)
+				animatedSprites["2Santa"]->update(deltaTime);
+		}
 	}
 };

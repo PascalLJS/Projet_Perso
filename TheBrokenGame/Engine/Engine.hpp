@@ -63,6 +63,10 @@ public :
 		this->windowSize = size;
 	}
 
+	Vector2i getSize() {
+		return Vector2i(windowSize.x, windowSize.y);
+	}
+
 	/// @brief Obtient la largeur de la fenêtre
 	/// @return La largeur en int
 	int getWidth() {

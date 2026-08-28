@@ -10,11 +10,21 @@
 #include "VisualComponent.hpp"
 #include "../CollisionDetection/HitBox.hpp"
 
+enum Direction {
+  Down = 0,
+  Right,
+  Left,
+  Up
+};
+
 /// @brief Image animé
-class AnimatedSprite : public VisualComponent {
+class AnimatedSprite {
 protected:
   Texture* texture;
+  Vector2f pos;
   Vector2f initialPos;
+  Vector2i size;
+  Direction direction;
   int currentFrame;
   float animationTimer;
   float frameDuration;
@@ -24,14 +34,14 @@ protected:
   HitBox* hitBox;
   
 public: 
-  /// @brief Constructeur
-  /// @param text
-  /// @param pos
-  /// @param size
-  AnimatedSprite(Texture* text, Vector2f posF, Vector2i size, HitBox *hitbox) : VisualComponent(posF, size) {
+  
+  AnimatedSprite(Texture* text, Vector2f pos, Vector2i size, HitBox *hitbox) {
     this->texture = text;
     this->currentFrame = 0;
-    this->initialPos = posF;
+    this->pos = pos;
+    this->initialPos = pos;
+    this->size = size;
+    this->direction = Direction::Down;
     this->animationTimer = 0.0f;
     this->frameDuration =0.10f;
     this->moving = false;
@@ -40,6 +50,10 @@ public:
 
   virtual ~AnimatedSprite() {}
 
+  Vector2f getPos() {
+    return this->pos;
+  }
+
   void resetAnimation() {
     this->currentFrame = 0;
     this->animationTimer = 0.0f;
@@ -47,13 +61,19 @@ public:
   }
 
   void resetPosition() {
-    this->posF = initialPos;
-    this->hitBox->setPos(posF);
+    this->pos = initialPos;
+    this->hitBox->setPos(pos);
+  }
+
+  unsigned int getDirection() {
+    return direction;
   }
 
   Vector2i getCenter() { 
     return MathUtils::getCenteredPoint(this->size);
   }
+
+  virtual void reposition(Vector2f penetration) = 0;
 
   virtual void calculateFrame(double deltaTime) = 0;
 

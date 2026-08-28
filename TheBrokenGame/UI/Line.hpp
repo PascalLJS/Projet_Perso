@@ -45,7 +45,7 @@ public:
     this->endOfLine = pos;
   }
 
-  virtual void render() {
+  void render() {
 
     glColor4ubv((unsigned char*)&color);
 

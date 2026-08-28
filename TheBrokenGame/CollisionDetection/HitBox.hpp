@@ -54,6 +54,10 @@ public:
 		this->size = newSize;
 	}
 
+	unsigned int getType() {
+		return eventType;
+	}
+
 	void notification() {
 		Event::push(eventType);
 	}

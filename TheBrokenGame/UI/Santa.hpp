@@ -11,30 +11,14 @@
 #include "../Math/MathUtils.hpp"
 #include "../DP/ArrayStack.hpp"
 
-
-enum class Direction {
-  Down = 0,
-  Right,
-  Left,
-  Up
-};
-
 /// @brief Père-Noel
 class Santa : public AnimatedSprite {
 private:
   Texture* texture;
   Vector2i size;
-  Vector2f lastPos;
-  int currentFrame;
-  Direction direction;
   ArrayStack<Direction> arrayStack;
-  float animationTimer;
-  float frameDuration;
-  int animationIndex = 0;
-  int speed = 150;
   float frameX;
   float frameY;
-  bool moving;
   
 public:
 
@@ -58,10 +42,8 @@ public:
   /// @param hitBox HitBox associé au Père-Noel
   Santa(Texture* text, Vector2f pos, Vector2i size, HitBox* hitBox) : AnimatedSprite(text, pos, size, hitBox), arrayStack(4) {
     this->texture = text;
-    this->lastPos = pos;
     this->size = size;
     this->currentFrame = 0;
-    this->direction = Direction::Down;
     this->animationTimer = 0.0f;
     this->frameDuration =0.10f;
     this->moving = false;
@@ -93,57 +75,25 @@ public:
   void moveUp(double deltaTime) {
     this->direction = Direction::Up;
     calculateFrame(deltaTime);
-    this->posF.y -= speed * deltaTime;
+    this->pos.y -= speed * deltaTime;
   }
 
   void moveRight(double deltaTime) {
     this->direction = Direction::Right;
     calculateFrame(deltaTime);
-    this->posF.x += speed * deltaTime;
+    this->pos.x += speed * deltaTime;
   }
 
   void moveLeft(double deltaTime) {
     this->direction = Direction::Left;
     calculateFrame(deltaTime);
-    this->posF.x -= speed * deltaTime;
+    this->pos.x -= speed * deltaTime;
   }
 
   void moveDown(double deltaTime) {
     this->direction = Direction::Down;
     calculateFrame(deltaTime);
-    this->posF.y += speed * deltaTime;
-  }
-
-  bool isOutOfMapNorth() {
-    if(this->hitBox->getPos().y < 0.0) {
-      updateHitBox(Vector2f(this->posF.x + getCenter().x - 22, 0.0));
-      return true;
-    }
-    return false;
-  }
-
-  bool isOutOfMapEast() {
-    if(this->hitBox->getPos().x > 1280 - hitBox->getSize().x) {
-      updateHitBox(Vector2f(1280 - hitBox->getSize().x, this->posF.y + getCenter().y - 40));
-      return true;
-    }
-    return false;
-  }
-
-  bool isOutOfMapWest() {
-    if(this->hitBox->getPos().x < 0.0) {
-      updateHitBox(Vector2f(0.0, this->posF.y + getCenter().y - 40));
-      return true;
-    }
-    return false;
-  }
-
-  bool isOutOfMapSouth() {
-    if(this->hitBox->getPos().y > (720 - hitBox->getSize().y)) {
-      updateHitBox(Vector2f(this->posF.x + getCenter().x - 22, 720 - hitBox->getSize().y));
-      return true;
-    }
-    return false;
+    this->pos.y += speed * deltaTime;
   }
 
   /// @brief Gère la Direction du Père-Noel
@@ -159,20 +109,22 @@ public:
       moveRight(deltaTime);
   }
 
-  void repositionSantaInsideMap() {
-    this->posF = lastPos;
-  }
+  void reposition(Vector2f penetration) {
+    if(arrayStack.top() == Direction::Up)
+      this->pos.y -= penetration.y;
+    else if(arrayStack.top() == Direction::Down)
+      this->pos.y += penetration.y;
+    else if(arrayStack.top() == Direction::Left)
+      this->pos.x -= penetration.x;
+    else if(arrayStack.top() == Direction::Right)
+      this->pos += penetration.x;
 
-  void repositionSanta() {
-  }
-
-  void updateHitBox(Vector2f vector) {
-    hitBox->setPos(vector);
+    updateHitBox();
   }
 
   /// @brief Repositione la Hitbox avec la position du Père-Noel
   void updateHitBox() {
-    hitBox->setPos(this->getPosF() + Vector2f(getCenter().x - 22, getCenter().y - 40));
+    hitBox->setPos(this->getPos() + Vector2f(getCenter().x - 22, getCenter().y - 40));
   }
 
   void render() {
@@ -187,13 +139,13 @@ public:
       glEnable(GL_TEXTURE_2D);
       glBegin(GL_QUADS);
           glTexCoord2f(u0, v0);
-          glVertex2f(posF.x, posF.y);
+          glVertex2f(pos.x, pos.y);
           glTexCoord2f(u1, v0);
-          glVertex2f(posF.x + size.x, posF.y);
+          glVertex2f(pos.x + size.x, pos.y);
           glTexCoord2f(u1, v1);
-          glVertex2f(posF.x + size.x, posF.y + size.y);
+          glVertex2f(pos.x + size.x, pos.y + size.y);
           glTexCoord2f(u0, v1);
-          glVertex2f(posF.x, posF.y + size.y);
+          glVertex2f(pos.x, pos.y + size.y);
       glEnd();
       glDisable(GL_TEXTURE_2D);
     }
@@ -225,12 +177,8 @@ public:
     if (arrayStack.isEmpty()) {
       resetAnimation();
     } else {
-      if(!isOutOfMapNorth() && !isOutOfMapEast() && !isOutOfMapWest() && !isOutOfMapSouth()) {
-        this->lastPos = posF;
         handleMovement(deltaTime);
         updateHitBox();
-      } else
-        this->hitBox->notification();
     }
   }
 };

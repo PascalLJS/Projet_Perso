@@ -109,7 +109,7 @@ public:
 	}
 
 	/// @brief Dessiner l'étiquette sur la fenêtre
-	virtual void render() {
+	void render() {
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		glBegin(GL_QUADS);
@@ -124,7 +124,7 @@ public:
 	}
 
 	/// @brief Détruit l'étiquette et sa texture associée
-	virtual ~Label() {
+	~Label() {
 		glDeleteTextures(1, &textureId);
 	}
 };
