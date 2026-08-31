@@ -18,11 +18,14 @@ private:
 	Engine &engine = Engine::getInstance(); ///< Instance du moteur
 	Matrix projection;
 	std::map<string, VisualComponent*> visualComponents;
+	bool dialogActive = true;
 	
 public:
 	/// @brief Charge la scène
 	void load() {
-		Font* font = engine.assetManager.getAsset<Font*>("fontBold32");
+		Font* font24 = engine.assetManager.getAsset<Font*>("fontBold24");
+		Font* font32 = engine.assetManager.getAsset<Font*>("fontBold32");
+		SDL_Color dialogText = engine.assetManager.getAsset<Color *>("BlackPure")->getSDLColor();
 		SDL_Color menuButtonColor = engine.assetManager.getAsset<Color *>("GrayDark1")->getSDLColor();
 		SDL_Color menuButtonHoverColor = engine.assetManager.getAsset<Color *>("GrayLight2")->getSDLColor();
 		Vector2i menuButtonSize = Vector2i(125, 50);
@@ -33,16 +36,19 @@ public:
 		glMultMatrixf(projection);
 
 		visualComponents["100playButton"] = new Button("Play",
-			font,
+			font32,
 			engine.assetManager.getAsset<Color*>("WhitePure")->getSDLColor(),
-			MathUtils::getCenteredPosition(engine.getWidth(), engine.getHeight(), menuButtonSize.x, menuButtonSize.y),
+			MathUtils::getCenteredPosition(engine.getSize(), menuButtonSize),
 			menuButtonSize,
 			menuButtonColor,
 			menuButtonHoverColor,
 			PLAY_BUTTON_CLICK
 		);
 
-		visualComponents["1InstructionL1"] = new Image(Vector2i(25, 25), Vector2i(engine.getWidth() - 50, engine.getHeight() - 50), engine.assetManager.getAsset<Texture*>("InstructionL1"));
+		visualComponents["0BackGround"] = new Image(Vector2i(0,0), Vector2i(engine.getWidth(), engine.getHeight()), engine.assetManager.getAsset<Texture*>("MenuBackGround"));
+		visualComponents["1Dialog"] = new Image(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 800), 25), Vector2i(800, 150), engine.assetManager.getAsset<Texture*>("Dialog"));
+		visualComponents["2DialogText"] = new Label(Vector2i(0,0), font24, "Bonjour, test", dialogText);
+		visualComponents["2DialogText"]->setPosition(MathUtils::getCenteredPosition(visualComponents["1Dialog"]->getSize(), visualComponents["2DialogText"]->getSize()) + visualComponents["1Dialog"]->getPos());
 
 		eventManager.subscribe(SDL_MOUSEMOTION, (Button*)visualComponents["100playButton"]);
 		eventManager.subscribe(SDL_MOUSEBUTTONDOWN, (Button*)visualComponents["100playButton"]);
@@ -76,20 +82,22 @@ public:
 							visualComponents["100playButton"]->setPosition(Vector2i(rand() % engine.getWidth() - visualComponents["100playButton"]->getSize().x, rand() % engine.getHeight() - visualComponents["100playButton"]->getSize().y));
 							((Button*)visualComponents["100playButton"])->updateLabelPosition();
 							break;
-						}				
+						}
 						engine.sceneManager.transitScene("FlagLevel1Scene");
-						break;
-			}
+					break;
+				}
+				break;
 			case SDL_KEYDOWN:
 					switch (Event::getKeyCode()) {
 						case SDLK_ESCAPE:
 							Event::push(SDL_QUIT, false);
 							break;
 						case SDLK_RETURN:
-							delete visualComponents["1InstructionL1"];
-							visualComponents.erase("1InstructionL1");
+							delete visualComponents["1Dialog"];
+							visualComponents.erase("1Dialog");
 							break;
-			}
+					}
+			break;
 			default:
 				eventManager.notify(Event::getType());
 		}

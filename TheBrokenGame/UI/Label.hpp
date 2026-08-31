@@ -42,12 +42,7 @@ public:
 	/// @param pos La position en haut à gauche sur l'écran
 	/// @param fontResource La ressource de police de caractère
 	/// @param startText (Optionnel) Le texte de départ de l'étiquette
-	Label(
-		Vector2i pos,
-		Font* fontResource, 
-		std::string startText = "Label", 
-		SDL_Color startColor = Engine::getInstance().assetManager.getAsset<Color*>("GrayDefault2")->getSDLColor()
-	) : VisualComponent(pos) {
+	Label(Vector2i pos, Font* fontResource,  std::string startText = "Label", SDL_Color startColor = Engine::getInstance().assetManager.getAsset<Color*>("GrayDefault2")->getSDLColor()) : VisualComponent(pos) {
 		this->font = fontResource;
 		this->textColor = startColor;
 		this->text = startText;
@@ -59,6 +54,11 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		renderText();
+	}
+
+		/// @brief Détruit l'étiquette et sa texture associée
+	~Label() {
+		glDeleteTextures(1, &textureId);
 	}
 
 	/// @brief Change le texte de l'étiquette et regénère la texture
@@ -110,6 +110,7 @@ public:
 
 	/// @brief Dessiner l'étiquette sur la fenêtre
 	void render() {
+		glEnable(GL_TEXTURE_2D);
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		glBegin(GL_QUADS);
@@ -121,10 +122,6 @@ public:
 			glTexCoord2f(0.0, 1.0); glVertex2i(pos.x, pos.y + size.y);
 		glEnd();
 		glEnableClientState(GL_VERTEX_ARRAY);
-	}
-
-	/// @brief Détruit l'étiquette et sa texture associée
-	~Label() {
-		glDeleteTextures(1, &textureId);
+		glDisable(GL_TEXTURE_2D);
 	}
 };

@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 	engine.sceneManager.addScene("Level2Scene", new Level2Scene());
 	engine.sceneManager.addScene("FlagLevel1Scene", new FlagLevel1Scene());
 	engine.sceneManager.addScene("FlagLevel2Scene", new FlagLevel2Scene());
-	engine.sceneManager.transitScene("Level2Scene");
+	engine.sceneManager.transitScene("Level1Scene");
 
 	engine.start();
 

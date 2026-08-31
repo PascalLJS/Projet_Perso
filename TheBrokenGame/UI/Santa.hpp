@@ -4,7 +4,6 @@
 #include <SDL2/SDL_opengl.h>
 
 #include "AnimatedSprite.hpp"
-#include "../Events/Event.hpp"
 #include "../Assets/Texture.hpp"
 #include "../Math/Vector2i.hpp"
 #include "../Math/Vector2f.hpp"
@@ -14,14 +13,11 @@
 /// @brief Père-Noel
 class Santa : public AnimatedSprite {
 private:
-  Texture* texture;
-  Vector2i size;
   ArrayStack<Direction> arrayStack;
   float frameX;
   float frameY;
   
 public:
-
   /// @brief Centre la HitBox avec le Père-Noel
   void initializeHitBox() {
     this->hitBox->setPos(Vector2f(getCenter().x - 22, getCenter().y - 40));
@@ -41,12 +37,6 @@ public:
   /// @param size Taille du Père-Noel
   /// @param hitBox HitBox associé au Père-Noel
   Santa(Texture* text, Vector2f pos, Vector2i size, HitBox* hitBox) : AnimatedSprite(text, pos, size, hitBox), arrayStack(4) {
-    this->texture = text;
-    this->size = size;
-    this->currentFrame = 0;
-    this->animationTimer = 0.0f;
-    this->frameDuration =0.10f;
-    this->moving = false;
     initializeHitBox();
     initiateSpriteCoords();
   }
@@ -109,7 +99,7 @@ public:
       moveRight(deltaTime);
   }
 
-  void reposition(Vector2f penetration) {
+  void reposition(Vector2f penetration) { 
     if(arrayStack.top() == Direction::Up)
       this->pos.y -= penetration.y;
     else if(arrayStack.top() == Direction::Down)

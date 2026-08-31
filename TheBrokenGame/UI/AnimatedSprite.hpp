@@ -24,7 +24,7 @@ protected:
   Vector2f pos;
   Vector2f initialPos;
   Vector2i size;
-  Direction direction;
+  unsigned int direction;
   int currentFrame;
   float animationTimer;
   float frameDuration;
@@ -42,6 +42,20 @@ public:
     this->initialPos = pos;
     this->size = size;
     this->direction = Direction::Down;
+    this->animationTimer = 0.0f;
+    this->frameDuration =0.10f;
+    this->moving = false;
+    this->hitBox = hitbox;
+  }
+
+  AnimatedSprite(Texture* text, Vector2f pos, Vector2i size, unsigned int direction, int speed, HitBox *hitbox) {
+    this->texture = text;
+    this->currentFrame = 0;
+    this->pos = pos;
+    this->initialPos = pos;
+    this->size = size;
+    this->speed = speed;
+    this->direction = direction;
     this->animationTimer = 0.0f;
     this->frameDuration =0.10f;
     this->moving = false;

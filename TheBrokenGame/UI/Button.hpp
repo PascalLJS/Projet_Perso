@@ -38,7 +38,7 @@ public:
         Label* tempLabel = new Label(Vector2i(0, 0), labelFont, text, labelColor); 
         Vector2i labelRealSize = tempLabel->getSize();
 
-        Vector2i labelPosition = MathUtils::getCenteredPosition(size.x, size.y, labelRealSize.x, labelRealSize.y);
+        Vector2i labelPosition = MathUtils::getCenteredPosition(size, labelRealSize);
         this->label = new Label(Vector2i(pos.x + labelPosition.x, pos.y + labelPosition.y), labelFont, text, labelColor);
 				this->label->setRealSize(labelRealSize);
         delete tempLabel;
@@ -94,7 +94,7 @@ public:
 	}
 
 	void updateLabelPosition(){
-		Vector2i centered = MathUtils::getCenteredPosition(this->getSize().x, this->getSize().y, this->label->getRealSize().x, this->label->getRealSize().y);
+		Vector2i centered = MathUtils::getCenteredPosition(this->getSize(), this->label->getRealSize());
 		this->label->setPosition(Vector2i(this->getPos().x + centered.x, this->getPos().y + centered.y));
 	}
 };

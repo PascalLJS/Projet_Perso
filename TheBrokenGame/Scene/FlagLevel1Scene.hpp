@@ -41,7 +41,7 @@ public:
 		glLoadIdentity();
 		glMultMatrixf(projection);
 
-    VisualComponentsFinal["Banner"] = new Image(Vector2i(25, 25), Vector2i(engine.getWidth() - 50, engine.getHeight() / 2 - 50), engine.assetManager.getAsset<Texture*>("InstructionFlag1"));
+    VisualComponentsFinal["Banner"] = new Image(Vector2i(25, 25), Vector2i(800, 150), engine.assetManager.getAsset<Texture*>("Dialog"));
     
     lineTransition["1"] = Vector2i(-1, 1);
     finalDestination["1"] = Vector2i(130, 400);
@@ -267,9 +267,9 @@ public:
 	/// @brief Gère le rendu de la scène
 	void handleRender() {
 		glClear(GL_COLOR_BUFFER_BIT);
-		for (auto it : VisualComponentsFinal)
-			it.second->render();
     for (auto it : LineToTransit)
+			it.second->render();
+    for (auto it : VisualComponentsFinal)
 			it.second->render();
 		Engine::getInstance().swapWindow();
 	}

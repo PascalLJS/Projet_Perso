@@ -8,6 +8,7 @@
 #include "../Math/Matrix.hpp"
 #include "../UI/AnimatedSprite.hpp"
 #include "../UI/Santa.hpp"
+#include "../UI/Present.hpp"
 #include "../CollisionDetection/HitBox.hpp"
 #include "../CollisionDetection/CollisionManager.hpp"
 #include "Scene.hpp"
@@ -37,6 +38,8 @@ public:
 		glMultMatrixf(projection);
 
 		hitboxes["1santaHitBox"] = new HitBox(SANTA_OUT_OF_MAP);
+		hitboxes["2HitBoxPresent0"] = new HitBox(SANTA_COLIDED_WITH_PRESENT);
+		hitboxes["2HitBoxPresent1"] = new HitBox(SANTA_COLIDED_WITH_PRESENT);
 		hitboxes["2wall0"] = new HitBox(Vector2f(0.0, 105), Vector2i(295, 10), SANTA_OUT_OF_BOUND);
 		hitboxes["2wall1"] = new HitBox(Vector2f(540, 0.0), Vector2i(300, 350), SANTA_OUT_OF_BOUND);
 		hitboxes["2wall2"] = new HitBox(Vector2f(0.0, 530), Vector2i(60, 280), SANTA_OUT_OF_BOUND);
@@ -49,6 +52,8 @@ public:
 
 		visualComponents["1Map"] = new Image(Vector2i(0,0), Vector2i(Engine::getInstance().getWidth(), Engine::getInstance().getHeight()),Engine::getInstance().assetManager.getAsset<Texture*>("Map"));
 		animatedSprites["2Santa"] = new Santa(Engine::getInstance().assetManager.getAsset<Texture*>("Santa"), Vector2f(0.0,0.0), Vector2i(96,96), hitboxes["1santaHitBox"]);
+		animatedSprites["3Present0"] = new Present(Engine::getInstance().assetManager.getAsset<Texture*>("Present"), Vector2f(30, 550), Vector2i(64,64), 1, 720, hitboxes["2HitBoxPresent0"]);
+		animatedSprites["3Present1"] = new Present(Engine::getInstance().assetManager.getAsset<Texture*>("Present"), Vector2f(1135, 630), Vector2i(64,64), 2, 720, hitboxes["2HitBoxPresent1"]);
 	}
 
 	/// @brief Décharge la scène
@@ -114,6 +119,9 @@ public:
 			
 			if(!isCollisionWithObstacles)
 				animatedSprites["2Santa"]->update(deltaTime);
+
+			for(auto it = ++animatedSprites.begin(); it != animatedSprites.end(); ++it)
+				it->second->update(deltaTime);
 		}
 	}
 };

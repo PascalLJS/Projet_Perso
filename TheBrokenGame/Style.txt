@@ -30,7 +30,7 @@ GreenDark3 13 50 26 255
 Transparent 0 0 0 0
 
 Font:
-fontRegular16 Ressources/Fonts/BalooDa2-Regular.ttf 16
+fontRegular16 Ressources/Fonts/BalooDa2-Regular.ttf 16  
 fontRegular24 Ressources/Fonts/BalooDa2-Regular.ttf 24
 fontRegular32 Ressources/Fonts/BalooDa2-Regular.ttf 32
 fontRegular48 Ressources/Fonts/BalooDa2-Regular.ttf 48
@@ -46,7 +46,10 @@ fontArrow60 Ressources/Fonts/NotoSansSymbols2-Regular.ttf 60
 fontArrow72 Ressources/Fonts/NotoSansSymbols2-Regular.ttf 72
 
 Texture:
-InstructionL1 Ressources/Textures/Info_Level1.png
-InstructionFlag1 Ressources/Textures/Info_Flag1.png
+MenuBackGround Ressources/Textures/BackGround.png
 Santa Ressources/Textures/Santa.png
+Present Ressources/Textures/Present.png
 Map Ressources/Textures/Map.png
+Rock Ressources/Textures/Rock.png
+DeadSanta Ressources/Textures/DeadSanta.png
+Dialog Ressources/Textures/DialogBox.png

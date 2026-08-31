@@ -24,8 +24,6 @@ private:
       penetration = Vector2f(obstacle->getPos().x - (player->getPos().x + player->getSize().x), 0.0);
     else if (direction == CollisionDirection::CDown)
       penetration = Vector2f(0.0, obstacle->getPos().y - (player->getPos().y + player->getSize().y));
-
-    obstacle->notification();
   }
 
   void calculateDepthOutOfMap(HitBox *hitbox, Vector2i mapSize, unsigned int direction) {
@@ -53,6 +51,7 @@ public:
     player->getPos().y + player->getSize().y > obstacle->getPos().y) {
       if(obstacle->getType() == SANTA_OUT_OF_BOUND)
         calculateCollisionPenetration(player, obstacle, direction);
+      obstacle->notification();
       return true;
     }
     return false;
