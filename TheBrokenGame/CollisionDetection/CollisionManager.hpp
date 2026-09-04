@@ -1,6 +1,5 @@
 #pragma once
 
-#include <list>
 #include "HitBox.hpp"
 
 enum CollisionDirection {

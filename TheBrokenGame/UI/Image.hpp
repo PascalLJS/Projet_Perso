@@ -14,23 +14,26 @@ private:
 	bool resizedX = false; ///< Indicateur de redimensionnement sur l'axe X
 	bool resizedY = false; ///< Indicateur de redimensionnement sur l'axe Y
 	Vector2i originalSize; ///< Taille originale de l'image
+	bool visibility = true;
 
 public:
 	/// @brief Constructeur.
 	/// @param pos Référence à la position de l'image.
 	/// @param size Référence à la taille de l'image.
 	/// @param texture Réference a la texture
-	Image(Vector2i pos, Vector2i size, Texture* texture) : 
+	Image(Vector2i pos, Vector2i size, Texture* texture, bool visibility = true) : 
 		VisualComponent(pos, size), 
 		texture(texture),
 		originalSize(size) 
-	{}
+	{
+		this->visibility = visibility;
+	}
 
 	~Image() {}
 
 	/// @brief Rendre l'image à l'écran.
 	virtual void render() {
-		if (texture) {
+		if (texture && isVisible()) {
 			texture->bind();
 			glEnable(GL_TEXTURE_2D);
 			glBegin(GL_QUADS);
@@ -52,6 +55,18 @@ public:
 			return true;
 			}
 		return false;
+	}
+
+	bool isVisible() {
+		return visibility;
+	}
+
+	void setVisible() {
+		this->visibility = true;
+	}
+
+	void setInvisible() {
+		this->visibility = false;
 	}
 
 	/// @brief Redimensionne l'image.

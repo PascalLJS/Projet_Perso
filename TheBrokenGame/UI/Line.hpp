@@ -21,7 +21,7 @@ public:
   /// @param pos position de depart
   /// @param end postion de fin
   /// @param color couleur de la ligne
-  Line(Vector2i pos, Vector2i end, SDL_Color color) : VisualComponent(pos){
+  Line(Vector2i pos, Vector2i end, SDL_Color color) : VisualComponent(pos) {
     this->startOfLine = pos;
     this->endOfLine = end;
     this->color = color;

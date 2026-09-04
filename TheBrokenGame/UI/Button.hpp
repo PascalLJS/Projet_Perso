@@ -40,7 +40,7 @@ public:
 
         Vector2i labelPosition = MathUtils::getCenteredPosition(size, labelRealSize);
         this->label = new Label(Vector2i(pos.x + labelPosition.x, pos.y + labelPosition.y), labelFont, text, labelColor);
-				this->label->setRealSize(labelRealSize);
+				this->label->setSize(labelRealSize);
         delete tempLabel;
 
         this->color = color;
@@ -76,8 +76,17 @@ public:
 		}
 	}
 
+	void disableButton() {
+		this->enable = false;
+	}
+
+	void enableButton() {
+		this->enable = true;
+	}
+
+
 	/// @brief Afficher le bouton et son étiquette
-	void render() override {
+	void render() {
 		glDisable(GL_TEXTURE_2D);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glBegin(GL_QUADS);
@@ -94,7 +103,7 @@ public:
 	}
 
 	void updateLabelPosition(){
-		Vector2i centered = MathUtils::getCenteredPosition(this->getSize(), this->label->getRealSize());
+		Vector2i centered = MathUtils::getCenteredPosition(this->getSize(), this->label->getSize());
 		this->label->setPosition(Vector2i(this->getPos().x + centered.x, this->getPos().y + centered.y));
 	}
 };
