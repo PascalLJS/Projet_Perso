@@ -42,13 +42,6 @@ public:
 
   ~Present(){}
 
-  /// @brief Remet l'animation à sa position Initiale
-  void resetAnimation() {
-    this->currentFrame = 0;
-    this->animationTimer = 0.0f;
-    this->animationIndex = 0;
-  }
-
   /// @brief Calcule l'image à mettre pour le rendu
   /// @param deltaTime 
   void calculateFrame(double deltaTime) {

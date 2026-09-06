@@ -21,13 +21,11 @@ public:
     currentDialog = nullptr;
   }
 
-  ~DialogManager() {
-    for(auto it = dialogs.begin(); it != dialogs.end(); ++it)
-      delete &it;
-    dialogs.clear();
-  }
+  ~DialogManager() { dialogs.clear(); }
 
   void resetCounter(int newCounter) {
+    dialogs.pop_front();
+    this->currentDialog = dialogs.front();
     dialogIndex = 0;
     dialogCount = newCounter;
   }
@@ -39,6 +37,10 @@ public:
 
   bool isDialogActive() {
     return this->dialogActive;
+  }
+
+  bool noMoreDialog() {
+    return dialogs.size() <= 1;
   }
 
   void activateDialog() {
@@ -70,7 +72,7 @@ public:
 
   void changeDialog() {
     dialogIndex++;
-    if(dialogIndex < dialogCount && dialogs.size() >= 2) {
+    if(dialogIndex < dialogCount && dialogs.size() > 1) {
       this->currentDialog->setInvisible();
       this->dialogs.pop_front();
       this->currentDialog = dialogs.front();

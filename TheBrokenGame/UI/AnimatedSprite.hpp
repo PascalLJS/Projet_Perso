@@ -31,6 +31,7 @@ protected:
   int animationIndex = 0;
   int speed = 150;
   bool moving;
+  bool isVisible = true;
   HitBox* hitBox;
   
 public: 
@@ -64,14 +65,23 @@ public:
 
   virtual ~AnimatedSprite() {}
 
-  Vector2f getPos() {
-    return this->pos;
-  }
-
+  /// @brief Remet l'animation à sa position Initiale
   void resetAnimation() {
     this->currentFrame = 0;
     this->animationTimer = 0.0f;
     this->animationIndex = 0;
+  }
+
+  Vector2f getPos() {
+    return this->pos;
+  }
+
+  void setInvisible() {
+    this->isVisible = false;
+  }
+
+  void setVisible() {
+    this->isVisible = true;
   }
 
   void resetPosition() {
@@ -81,6 +91,10 @@ public:
 
   unsigned int getDirection() {
     return direction;
+  }
+
+  void resetDirection() {
+    this->direction = Direction::Down;
   }
 
   Vector2i getCenter() { 

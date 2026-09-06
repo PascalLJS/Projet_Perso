@@ -37,14 +37,19 @@ public:
 	/// @throw std::runtime_error si l'asset n'est pas trouvé ou si le type est incorrect.
 	template<typename T>
 	T getAsset(const std::string &nom) {
-		return dynamic_cast<T>(assets[nom]);
+		auto it = assets.find(nom);
+		if (it != assets.end()) {
+			return dynamic_cast<T>(assets[nom]);
+		} else {
+			throw std::runtime_error("Asset non trouvé : " + nom);
+		}
 	}
 
 	/// @brief Supprime un asset du gestionnaire.
 	/// @param nom Nom de l'asset à supprimer.
 	/// @throw std::runtime_error si l'asset n'est pas trouvé.
 	void removeAsset(const std::string &nom) {
-		std::map<std::string, Asset*>::iterator it = assets.find(nom);
+		auto it = assets.find(nom);
 		if (it != assets.end()) {
 			delete it->second;
 			assets.erase(it);

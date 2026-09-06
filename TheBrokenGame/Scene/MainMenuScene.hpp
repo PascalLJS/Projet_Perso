@@ -56,12 +56,12 @@ public:
 		firstDialog->addLabel(dialog0);
 		firstDialog->addLabel(dialog01);
 
-		//Second Dialog
+		//First Dialog
 		LabelGrid *secondDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
 		Label *dialog1 = new Label(Vector2i(0,0), font24, "Unfortunately, something went terribly wrong...", dialogText);
 		secondDialog->addLabel(dialog1);
 		
-		//Third Dialog
+		//First Dialog
 		LabelGrid *thirdDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
 		Label *dialog2 = new Label(Vector2i(0,0), font24, "Your first task is to access the game. Good luck !!", dialogText);
 		thirdDialog->addLabel(dialog2);
@@ -117,7 +117,7 @@ public:
 			case SDL_USEREVENT:
 				switch (Event::getUserEventCode()) {
 					case PLAY_BUTTON_CLICK:
-						if(!engine.isAllowToPass()) {
+						if(engine.isAllowToPass()) {
 							engine.sceneManager.addScene("GameScene", new GameScene());
 							engine.sceneManager.transitScene("GameScene");
 							break;

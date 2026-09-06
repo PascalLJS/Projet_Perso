@@ -68,9 +68,7 @@ class LabelGrid : public VisualComponent {
     this->centeredType = centeredType;
   }
 
-  ~LabelGrid() {
-    labelsList.clear();
-  }
+  ~LabelGrid() { labelsList.clear(); }
 
   void removeLabel(Label* label) {
     labelsList.remove(label);

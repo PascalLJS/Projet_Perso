@@ -43,13 +43,6 @@ public:
 
   ~Santa(){}
 
-  /// @brief Remet l'animation à sa position Initiale
-  void resetAnimation() {
-    this->currentFrame = 0;
-    this->animationTimer = 0.0f;
-    this->animationIndex = 0;
-  }
-
   /// @brief Calcule l'image à mettre pour le rendu
   /// @param deltaTime 
   void calculateFrame(double deltaTime) {
@@ -118,7 +111,7 @@ public:
   }
 
   void render() {
-    if (texture) {
+    if (texture && isVisible) {
       texture->bind();
       float u0 = currentFrame * frameX;
       float v0 = static_cast<int>(direction) * frameY;
