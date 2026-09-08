@@ -22,6 +22,11 @@ protected:
 
 	/// @brief Redessine le texte sur la texture
 	virtual void renderText() {
+		if (text.empty()) {
+        size.x = 0;
+        size.y = 0;
+        return;
+    }
 		SDL_Surface* surf = TTF_RenderUTF8_Blended(font->getFont(), text.c_str(), textColor);
 
 		if (surf) {
@@ -106,7 +111,6 @@ public:
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		glBegin(GL_QUADS);
 			glColor4ub(255,255,255,255);
-
 			glTexCoord2f(0.0, 0.0); glVertex2i(pos.x, pos.y);
 			glTexCoord2f(1.0, 0.0); glVertex2i(pos.x + size.x, pos.y);
 			glTexCoord2f(1.0, 1.0); glVertex2i(pos.x + size.x, pos.y + size.y);

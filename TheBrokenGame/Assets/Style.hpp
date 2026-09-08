@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <windows.h>
+#include <string>
 
 #include "AssetManager.hpp"
 
@@ -25,14 +27,21 @@ private:
 		removeAssetsFromFile();
 	}
 
+	inline std::string getExeDir() {
+		char path[MAX_PATH];
+		GetModuleFileNameA(NULL, path, MAX_PATH);
+		std::string p(path);
+		return p.substr(0, p.find_last_of("\\/"));
+	}
+
 	/// @brief Charge les assets depuis le fichier "Style.txt" en fonction de leurs types (couleur, texture, police ou uvmesh).
 	void loadAssetsFromFile() {
-		std::ifstream file("Style.txt");
+		std::string basePath = getExeDir() + "\\Ressources\\";
+		std::ifstream file(basePath + "Style.txt");
 		if (!file) {
-			std::cerr << "Erreur : Impossible d'ouvrir le fichier Style.txt\n";
+			std::cerr << "Erreur : Impossible d'ouvrir Style.txt at " + basePath + "Style.txt\n";
 			return;
 		}
-
 		std::string line;
 		while (std::getline(file, line)) {
 			if (line == "Color:") {
@@ -49,17 +58,17 @@ private:
 					std::istringstream ss(line);
 					std::string name, texturePath;
 					if (ss >> name >> texturePath) {
-						assetManager.addAsset(name, new Texture(texturePath));
+							assetManager.addAsset(name, new Texture(basePath + texturePath));
 					}
-				}
+    		}
 			} else if (line == "Font:") {
 				while (std::getline(file, line) && !line.empty()) {
-					std::istringstream ss(line);
-					std::string name, fontPath;
-					int fontSize = 12;
-					if (ss >> name >> fontPath >> fontSize) {
-						assetManager.addAsset(name, new Font(fontPath, fontSize));
-					}
+						std::istringstream ss(line);
+						std::string name, fontPath;
+						int fontSize = 12;
+						if (ss >> name >> fontPath >> fontSize) {
+								assetManager.addAsset(name, new Font(basePath + fontPath, fontSize));
+						}
 				}
 			}
 		}
@@ -68,9 +77,10 @@ private:
 
 	/// @brief Supprime les assets listés dans le fichier "Style.txt".
 	void removeAssetsFromFile() {
-		std::ifstream file("Style.txt");
+		std::string basePath = getExeDir() + "\\";
+		std::ifstream file(basePath + "Style.txt");
 		if (!file) {
-			std::cerr << "Erreur : Impossible d'ouvrir le fichier Style.txt\n";
+			std::cerr << "Erreur : Impossible d'ouvrir Style.txt at " + basePath + "Style.txt\n";
 			return;
 		}
 

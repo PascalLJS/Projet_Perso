@@ -24,7 +24,7 @@ private :
 	/// @brief Crée la fenêtre
 	/// @param config Contient les paramètres de configuration
 	void createWindow() {
-  	sdlWindow = SDL_CreateWindow("The Broken Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_OPENGL);
+  	sdlWindow = SDL_CreateWindow("The Broken Christmas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_OPENGL);
 		glContext = SDL_GL_CreateContext(sdlWindow);
 	}
 

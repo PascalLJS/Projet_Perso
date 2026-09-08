@@ -9,7 +9,7 @@
 				"/EHsc",
 				"/nologo",
 				"main.cpp",
-				"/Fe${workspaceFolder}/build/program.exe",
+				"/Fe${workspaceFolder}/TheBrokenChristmas/TheBrokenChristmas.exe",
 				"/link",
 				"shell32.lib",
 				"opengl32.lib",

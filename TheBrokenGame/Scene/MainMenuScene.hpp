@@ -56,12 +56,12 @@ public:
 		firstDialog->addLabel(dialog0);
 		firstDialog->addLabel(dialog01);
 
-		//First Dialog
+		//Second Dialog
 		LabelGrid *secondDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
 		Label *dialog1 = new Label(Vector2i(0,0), font24, "Unfortunately, something went terribly wrong...", dialogText);
 		secondDialog->addLabel(dialog1);
 		
-		//First Dialog
+		//Third Dialog
 		LabelGrid *thirdDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
 		Label *dialog2 = new Label(Vector2i(0,0), font24, "Your first task is to access the game. Good luck !!", dialogText);
 		thirdDialog->addLabel(dialog2);
@@ -97,7 +97,6 @@ public:
 	void unload() {
 		eventManager.unsubscribe(SDL_MOUSEMOTION, (Button*)visualComponents["100playButton"]);
 		eventManager.unsubscribe(SDL_MOUSEBUTTONDOWN, (Button*)visualComponents["100playButton"]);
-
 		for (auto it : visualComponents)
 			delete it.second;
 		visualComponents.clear();

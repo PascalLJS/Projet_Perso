@@ -8,12 +8,7 @@
 #include "../Math/MathUtils.hpp"
 #include "VisualComponent.hpp"
 #include "Label.hpp"
-
-enum CenteredType {
-  LEFT = 0,
-  CENTERED,
-  RIGHT
-};
+#include "Alignments.hpp"
 
 class LabelGrid : public VisualComponent {
   private:
@@ -68,7 +63,11 @@ class LabelGrid : public VisualComponent {
     this->centeredType = centeredType;
   }
 
-  ~LabelGrid() { labelsList.clear(); }
+  ~LabelGrid() { 
+    for(auto it : labelsList)
+      delete it;
+    labelsList.clear(); 
+  }
 
   void removeLabel(Label* label) {
     labelsList.remove(label);
