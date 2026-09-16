@@ -1,0 +1,4 @@
+Firewall : https://www.pfsense.org/download/
+AD : https://info.microsoft.com/ww-landing-evaluate-windows-server-2025.html?lcid=en-us&culture=en-us&country=us
+Window Desktop : https://www.microsoft.com/en-us/software-download/windows11
+Wazuh (Ubuntu Server) : https://ubuntu.com/download/server
