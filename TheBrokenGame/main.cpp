@@ -10,9 +10,9 @@ int main(int argc, char *argv[]) {
 	Engine &engine = Engine::getInstance();
 	Style style{engine.assetManager};
 
-	engine.sceneManager.addScene("HiddenSecret", new HiddenSecretScene());
+	engine.sceneManager.addScene("HiddenSecretScene", new HiddenSecretScene());
 	engine.sceneManager.addScene("MainMenu", new MainMenu());
-	engine.sceneManager.transitScene("MainMenu");
+	engine.sceneManager.transitScene("HiddenSecretScene");
 
 	engine.start();
 

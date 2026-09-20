@@ -84,7 +84,7 @@ class HiddenSecretScene : public Scene {
 
       visualComponents["enteredCode"] = new Label(Vector2i(0,0), font24, "", White);
 
-      visualComponents["labelWrapper"] = new LabelWrapper(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 235), 325), Vector2i(235, 50), White, ((Label*)visualComponents["enteredCode"]), 5);
+      visualComponents["labelWrapper"] = new LabelWrapper(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 235), 375), Vector2i(235, 50), White, ((Label*)visualComponents["enteredCode"]), 5);
 
       visualComponents["1button1"] = new Button("1",
         font32,
@@ -230,6 +230,19 @@ class HiddenSecretScene : public Scene {
 
       buttonGrid->setPosition(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), buttonGrid->getSize().x), 50));
     
+      visualComponents["1buttonEnter"] = new Button("Enter",
+        font32,
+        White,
+        Vector2i(MathUtils::getCenteredPositionX(engine.getSize().x, 150), (buttonGrid->getPos().y + buttonGrid->getSize().y) + 15),
+        Vector2i(150, 50),
+        ButtonColor,
+        ButtonHoverColor,
+        BUTTON_CLICK_ENTER
+		  );
+
+      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonEnter"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonEnter"]));
+      
+
       dialogManager = new DialogManager(3, ((Image*)visualComponents["3Banner"]));
       dialogManager->addDialog(firstDialog);
       dialogManager->addDialog(secondDialog);
@@ -243,6 +256,7 @@ class HiddenSecretScene : public Scene {
         eventManager.unsubscribe(SDL_MOUSEMOTION, it);
         eventManager.unsubscribe(SDL_MOUSEBUTTONDOWN, it);
       }
+      
       for (auto it : visualComponents)
        delete it.second;
 
@@ -302,6 +316,9 @@ class HiddenSecretScene : public Scene {
                 ((Label*)visualComponents["enteredCode"])->setText(enteredCode);
                 ((LabelWrapper *)visualComponents["labelWrapper"])->updateLabelPosition();
                 break;
+            case BUTTON_CLICK_ENTER: 
+              //TODO
+              break;
           }
           break;
         case SDL_KEYDOWN:

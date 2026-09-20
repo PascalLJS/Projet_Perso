@@ -1,0 +1,33 @@
+Our reverse-engineering team has been going through the remaining files from the original development build.
+
+Most of them are exactly what we expected to find.
+
+Except for one.
+
+We discovered a file that is considerably larger than the other scene files in the project.
+
+At first, we assumed it was simply a corrupted or unfinished scene.
+
+But after examining it more closely, we found something unusual.
+
+The scene appears to contain content that isn't accessible from anywhere in the game.
+
+There are no buttons.
+No documented entrance.
+No references from the other scenes.
+
+It looks like the developers deliberately left it behind.
+
+Even stranger...
+
+The scene has a name:
+
+"HiddenSecretScene"
+
+We don't know what is inside.
+
+We don't know why it was hidden.
+
+And we don't know if the developers ever intended anyone to find it.
+
+Your task: Find a way into HiddenSecretScene.

@@ -1,0 +1,21 @@
+This game was discovered on an old development computer belonging to a small game studio.
+
+According to the remaining files, the studio had been working on a Christmas game for years. The project was never officially released.
+
+Then, without warning, the developers disappeared.
+
+The company was eventually shut down, and most of the project was lost. Only a few files were recovered from the old development machines.
+
+Among them was this build.
+
+We don't know what happened to the developers, and we don't know why they left the game in this state.
+
+What we do know is that something is wrong.
+
+Parts of the game are missing.
+Some features don't work.
+Others appear to have been deliberately disabled.
+
+We've managed to recover enough of the project to launch it, but we can't get any further.
+
+So we've decided to leave it in your hands.

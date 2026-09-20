@@ -116,7 +116,7 @@ public:
 			case SDL_USEREVENT:
 				switch (Event::getUserEventCode()) {
 					case PLAY_BUTTON_CLICK:
-						if(engine.isAllowToPass()) {
+						if(!engine.isAllowToPass()) {
 							engine.sceneManager.addScene("GameScene", new GameScene());
 							engine.sceneManager.transitScene("GameScene");
 							break;
