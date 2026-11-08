@@ -11,6 +11,7 @@
 #include "../UI/LabelGrid.hpp"
 #include "../UI/Label.hpp"
 #include "../UI/LabelWrapper.hpp"
+#include "../NetworkConnection/clientConnection.hpp"
 #include "GameScene.hpp"
 #include "Scene.hpp"
 #include "../UI/DialogManager.hpp"
@@ -27,7 +28,10 @@ class HiddenSecretScene : public Scene {
     std::map<string, VisualComponent*> visualComponents;
     DialogManager *dialogManager;
     ButtonGrid *buttonGrid;
+    ClientConnection *connection;
     std::string enteredCode = "";
+    std::string serverStoreCode = "";
+    std::string serverAnswer = "";
     
   public:
     /// @brief Charge la scène
@@ -40,214 +44,228 @@ class HiddenSecretScene : public Scene {
       SDL_Color ButtonHoverColor = engine.assetManager.getAsset<Color *>("GrayLight2")->getSDLColor();
       Vector2i ButtonSize = Vector2i(75, 50);
 
+      connection = new ClientConnection();
+      serverStoreCode = connection->setConnection();
+
       projection.loadProjection(Engine::getInstance().getWidth(), Engine::getInstance().getHeight());
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
-      glMultMatrixf(projection);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMultMatrixf(projection);
 
-      ///FirstDialog
-      LabelGrid *firstDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
-      Label *label0 = new Label(Vector2i(0,0), font24, "Wow... I honestly didn't expect you to make it this far.", dialogText);
-      Label *label1 = new Label(Vector2i(0,0), font24, "But let's see if you're really as clever as you think you are.", dialogText);
-      firstDialog->addLabel(label0);
-      firstDialog->addLabel(label1);
+      if(connection->isCodeReceived()) {
 
-      //Second Dialog
-      LabelGrid *secondDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
-      Label *dialog1 = new Label(Vector2i(0,0), font24, "I've sent you a little code.", dialogText);
-      Label *dialog12 = new Label(Vector2i(0,0), font24, "Eight digits. Nothing too complicated... right?", dialogText);
-      secondDialog->addLabel(dialog1);
-      secondDialog->addLabel(dialog12);
+        //std::cout << serverStoreCode << std::endl;
 
-      //Third Dialog
-      LabelGrid *thirdDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
-      Label *dialog2 = new Label(Vector2i(0,0), font24, "Now, prove you got it.", dialogText);
-      Label *dialog22 = new Label(Vector2i(0,0), font24, "Can you confirm those eight digits for me?", dialogText);
-      thirdDialog->addLabel(dialog2);
-      thirdDialog->addLabel(dialog22);
+        ///FirstDialog
+        LabelGrid *firstDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
+        Label *label0 = new Label(Vector2i(0,0), font24, "Wow... I honestly didn't expect you to make it this far.", dialogText);
+        Label *label1 = new Label(Vector2i(0,0), font24, "But let's see if you're really as clever as you think you are.", dialogText);
+        firstDialog->addLabel(label0);
+        firstDialog->addLabel(label1);
 
-      visualComponents["3Banner"] = new Image(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 800), 25), Vector2i(800, 150), engine.assetManager.getAsset<Texture*>("Dialog"));
-      visualComponents["3firstDialog"] = firstDialog;
-      visualComponents["3secondDialog"] = secondDialog;
-      visualComponents["3thirdDialog"] = thirdDialog;
+        //Second Dialog
+        LabelGrid *secondDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
+        Label *dialog1 = new Label(Vector2i(0,0), font24, "I've sent you a little code.", dialogText);
+        Label *dialog12 = new Label(Vector2i(0,0), font24, "Eight digits. Nothing too complicated... right?", dialogText);
+        secondDialog->addLabel(dialog1);
+        secondDialog->addLabel(dialog12);
 
-      firstDialog->setPosition(MathUtils::getCenteredPosition(visualComponents["3Banner"]->getSize(), firstDialog->getSize()) + visualComponents["3Banner"]->getPos());
-      firstDialog->resetPosition();
+        //Third Dialog
+        LabelGrid *thirdDialog = new LabelGrid(Vector2i(0,0), Vector2i(0,0), 0);
+        Label *dialog2 = new Label(Vector2i(0,0), font24, "Now, prove you got it.", dialogText);
+        Label *dialog22 = new Label(Vector2i(0,0), font24, "Can you confirm those eight digits for me?", dialogText);
+        thirdDialog->addLabel(dialog2);
+        thirdDialog->addLabel(dialog22);
 
-      secondDialog->setPosition(MathUtils::getCenteredPosition(visualComponents["3Banner"]->getSize(), secondDialog->getSize()) + visualComponents["3Banner"]->getPos());
-      secondDialog->resetPosition();
+        visualComponents["3Banner"] = new Image(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 800), 25), Vector2i(800, 150), engine.assetManager.getAsset<Texture*>("Dialog"));
+        visualComponents["3firstDialog"] = firstDialog;
+        visualComponents["3secondDialog"] = secondDialog;
+        visualComponents["3thirdDialog"] = thirdDialog;
 
-      thirdDialog->setPosition(MathUtils::getCenteredPosition(visualComponents["3Banner"]->getSize(), thirdDialog->getSize()) + visualComponents["3Banner"]->getPos());
-      thirdDialog->resetPosition();
+        firstDialog->setPosition(MathUtils::getCenteredPosition(visualComponents["3Banner"]->getSize(), firstDialog->getSize()) + visualComponents["3Banner"]->getPos());
+        firstDialog->resetPosition();
 
-      buttonGrid = new ButtonGrid(Vector2i(0,0), Vector2i(0,0), 10, 3, 4);
+        secondDialog->setPosition(MathUtils::getCenteredPosition(visualComponents["3Banner"]->getSize(), secondDialog->getSize()) + visualComponents["3Banner"]->getPos());
+        secondDialog->resetPosition();
 
-      visualComponents["enteredCode"] = new Label(Vector2i(0,0), font24, "", White);
+        thirdDialog->setPosition(MathUtils::getCenteredPosition(visualComponents["3Banner"]->getSize(), thirdDialog->getSize()) + visualComponents["3Banner"]->getPos());
+        thirdDialog->resetPosition();
 
-      visualComponents["labelWrapper"] = new LabelWrapper(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 235), 375), Vector2i(235, 50), White, ((Label*)visualComponents["enteredCode"]), 5);
+        buttonGrid = new ButtonGrid(Vector2i(0,0), Vector2i(0,0), 10, 3, 4);
 
-      visualComponents["1button1"] = new Button("1",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_1
-		  );
+        visualComponents["enteredCode"] = new Label(Vector2i(0,0), font24, "", White);
 
-      visualComponents["1button2"] = new Button("2",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_2
-		  );
+        visualComponents["labelWrapper"] = new LabelWrapper(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), 235), 375), Vector2i(235, 50), White, ((Label*)visualComponents["enteredCode"]), 5);
 
-      visualComponents["1button3"] = new Button("3",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_3
-		  );
+        visualComponents["1button1"] = new Button("1",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_1
+        );
 
-      visualComponents["1button4"]= new Button("4",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_4
-		  );
+        visualComponents["1button2"] = new Button("2",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_2
+        );
 
-      visualComponents["1button5"] = new Button("5",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_5
-		  );
+        visualComponents["1button3"] = new Button("3",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_3
+        );
 
-      visualComponents["1button6"] = new Button("6",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_6
-		  );
+        visualComponents["1button4"]= new Button("4",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_4
+        );
 
-      visualComponents["1button7"] = new Button("7",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_7
-		  );
+        visualComponents["1button5"] = new Button("5",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_5
+        );
 
-      visualComponents["1button8"] = new Button("8",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_8
-		  );
+        visualComponents["1button6"] = new Button("6",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_6
+        );
 
-      visualComponents["1button9"] = new Button("9",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_9
-		  );
+        visualComponents["1button7"] = new Button("7",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_7
+        );
 
-      visualComponents["1button0"] = new Button("0",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_0
-		  );
+        visualComponents["1button8"] = new Button("8",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_8
+        );
 
-      visualComponents["1buttonBack"] = new Button("Back",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_BACK
-		  );
+        visualComponents["1button9"] = new Button("9",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_9
+        );
 
-      visualComponents["1buttonClear"] = new Button("C",
-        font32,
-        White,
-        MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
-        ButtonSize,
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_C
-		  );
+        visualComponents["1button0"] = new Button("0",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_0
+        );
 
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button0"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button0"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button1"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button1"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button2"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button2"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button3"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button3"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button4"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button4"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button5"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button5"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button6"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button6"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button7"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button7"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button8"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button8"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button9"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button9"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonClear"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonClear"]));
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonBack"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonBack"]));
+        visualComponents["1buttonBack"] = new Button("Back",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_BACK
+        );
 
-      // First row
-      buttonGrid->addButton((Button *)visualComponents["1button1"]); buttonGrid->addButton((Button *)visualComponents["1button2"]); buttonGrid->addButton((Button *)visualComponents["1button3"]);
-      // Second row
-      buttonGrid->addButton((Button *)visualComponents["1button4"]); buttonGrid->addButton((Button *)visualComponents["1button5"]); buttonGrid->addButton((Button *)visualComponents["1button6"]);
-      // Third row
-      buttonGrid->addButton((Button *)visualComponents["1button7"]); buttonGrid->addButton((Button *)visualComponents["1button8"]); buttonGrid->addButton((Button *)visualComponents["1button9"]);
-      // Fourth row
-      buttonGrid->addButton((Button *)visualComponents["1buttonClear"]); buttonGrid->addButton((Button *)visualComponents["1button0"]); buttonGrid->addButton((Button *)visualComponents["1buttonBack"]);
+        visualComponents["1buttonClear"] = new Button("C",
+          font32,
+          White,
+          MathUtils::getCenteredPosition(engine.getSize(), ButtonSize),
+          ButtonSize,
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_C
+        );
 
-      buttonGrid->setPosition(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), buttonGrid->getSize().x), 50));
-    
-      visualComponents["1buttonEnter"] = new Button("Enter",
-        font32,
-        White,
-        Vector2i(MathUtils::getCenteredPositionX(engine.getSize().x, 150), (buttonGrid->getPos().y + buttonGrid->getSize().y) + 15),
-        Vector2i(150, 50),
-        ButtonColor,
-        ButtonHoverColor,
-        BUTTON_CLICK_ENTER
-		  );
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button0"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button0"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button1"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button1"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button2"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button2"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button3"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button3"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button4"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button4"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button5"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button5"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button6"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button6"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button7"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button7"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button8"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button8"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1button9"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1button9"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonClear"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonClear"]));
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonBack"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonBack"]));
 
-      eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonEnter"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonEnter"]));
+        // First row
+        buttonGrid->addButton((Button *)visualComponents["1button1"]); buttonGrid->addButton((Button *)visualComponents["1button2"]); buttonGrid->addButton((Button *)visualComponents["1button3"]);
+        // Second row
+        buttonGrid->addButton((Button *)visualComponents["1button4"]); buttonGrid->addButton((Button *)visualComponents["1button5"]); buttonGrid->addButton((Button *)visualComponents["1button6"]);
+        // Third row
+        buttonGrid->addButton((Button *)visualComponents["1button7"]); buttonGrid->addButton((Button *)visualComponents["1button8"]); buttonGrid->addButton((Button *)visualComponents["1button9"]);
+        // Fourth row
+        buttonGrid->addButton((Button *)visualComponents["1buttonClear"]); buttonGrid->addButton((Button *)visualComponents["1button0"]); buttonGrid->addButton((Button *)visualComponents["1buttonBack"]);
+
+        buttonGrid->setPosition(Vector2i(MathUtils::getCenteredPositionX(engine.getWidth(), buttonGrid->getSize().x), 50));
       
+        visualComponents["1buttonEnter"] = new Button("Enter",
+          font32,
+          White,
+          Vector2i(MathUtils::getCenteredPositionX(engine.getSize().x, 150), (buttonGrid->getPos().y + buttonGrid->getSize().y) + 15),
+          Vector2i(150, 50),
+          ButtonColor,
+          ButtonHoverColor,
+          BUTTON_CLICK_ENTER
+        );
 
-      dialogManager = new DialogManager(3, ((Image*)visualComponents["3Banner"]));
-      dialogManager->addDialog(firstDialog);
-      dialogManager->addDialog(secondDialog);
-      dialogManager->addDialog(thirdDialog);
-      dialogManager->activateDialog();
+        visualComponents["ServerAnswer"] = new Label(Vector2i(MathUtils::getCenteredPositionX(engine.getSize().x, 0), engine.getHeight() - 75), font24, "", White);
+
+        eventManager.subscribe(SDL_MOUSEMOTION, ((Button *)visualComponents["1buttonEnter"])); eventManager.subscribe(SDL_MOUSEBUTTONDOWN, ((Button *)visualComponents["1buttonEnter"]));
+        
+
+        dialogManager = new DialogManager(3, ((Image*)visualComponents["3Banner"]));
+        dialogManager->addDialog(firstDialog);
+        dialogManager->addDialog(secondDialog);
+        dialogManager->addDialog(thirdDialog);
+        dialogManager->activateDialog();
+      } else {
+        visualComponents["ServerAnswer"] = new Label(MathUtils::getCenteredPosition(engine.getSize(), Vector2i(0, 0)), font24, "", White);
+        ((Label *)visualComponents["ServerAnswer"])->setText(serverStoreCode);
+        visualComponents["ServerAnswer"]->setPositionX(MathUtils::getCenteredPositionX(engine.getSize().x, ((Label*)visualComponents["ServerAnswer"])->getSize().x));        
+      }
     }
 
     /// @brief Décharge la scène
@@ -312,11 +330,22 @@ class HiddenSecretScene : public Scene {
                 ((LabelWrapper *)visualComponents["labelWrapper"])->updateLabelPosition();
                 break;
             case BUTTON_CLICK_BACK:
-                enteredCode.pop_back();
+                if(enteredCode.size() > 0)
+                  enteredCode.pop_back();
                 ((Label*)visualComponents["enteredCode"])->setText(enteredCode);
                 ((LabelWrapper *)visualComponents["labelWrapper"])->updateLabelPosition();
                 break;
             case BUTTON_CLICK_ENTER: 
+              if(enteredCode.size() == 8) {
+                serverAnswer = connection->writeToServer(enteredCode);
+                enteredCode = "";
+                ((Label*)visualComponents["enteredCode"])->setText(enteredCode);
+                ((LabelWrapper *)visualComponents["labelWrapper"])->updateLabelPosition();
+                ((Label*)visualComponents["ServerAnswer"])->setText(serverAnswer);
+                visualComponents["ServerAnswer"]->setPositionX(MathUtils::getCenteredPositionX(engine.getSize().x, ((Label*)visualComponents["ServerAnswer"])->getSize().x));
+              }
+              break;
+            case SERVER_CONNECTION_TIMEOUT:
               //TODO
               break;
           }
@@ -332,14 +361,16 @@ class HiddenSecretScene : public Scene {
 						break;
           }
         default:
-          if(dialogManager->isDialogActive()) {
-            SDL_SetRelativeMouseMode(SDL_TRUE);
-            buttonGrid->disableButtons();
-            dialogManager->setCurrentVisible();
-          } else {
-            if(!buttonGrid->isButtonsEnable()) {
-              SDL_SetRelativeMouseMode(SDL_FALSE);
-              buttonGrid->enableButtons();
+          if(connection->isCodeReceived()) {
+            if(dialogManager->isDialogActive()) {
+              SDL_SetRelativeMouseMode(SDL_TRUE);
+              buttonGrid->disableButtons();
+              dialogManager->setCurrentVisible();
+            } else {
+              if(!buttonGrid->isButtonsEnable()) {
+                SDL_SetRelativeMouseMode(SDL_FALSE);
+                buttonGrid->enableButtons();
+              }
             }
           }
           eventManager.notify(Event::getType());

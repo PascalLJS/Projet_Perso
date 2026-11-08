@@ -46,6 +46,12 @@ public:
 		this->pos = position;
 	}
 
+	void setPositionX(int posX){
+		if(posX < 0)
+			posX = 0;
+		this->pos.x = posX;
+	}
+
 	/// @brief Obtient la taille du composant
 	/// @return Un vecteur de taille
 	Vector2i getSize() {

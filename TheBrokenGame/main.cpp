@@ -1,4 +1,3 @@
-#include "SDL2/SDL.h"
 #include "SDL2/SDL_main.h"
 
 #include "Engine/Engine.hpp"
@@ -11,8 +10,8 @@ int main(int argc, char *argv[]) {
 	Style style{engine.assetManager};
 
 	engine.sceneManager.addScene("HiddenSecretScene", new HiddenSecretScene());
-	engine.sceneManager.addScene("MainMenu", new MainMenu());
-	engine.sceneManager.transitScene("HiddenSecretScene");
+	engine.sceneManager.addScene("MainMenuScene", new MainMenu());
+	engine.sceneManager.transitScene("MainMenuScene");
 
 	engine.start();
 

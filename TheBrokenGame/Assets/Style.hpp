@@ -1,47 +1,42 @@
 #pragma once
 
-#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <windows.h>
 #include <string>
+#include <vector>
+#include <windows.h>
 
 #include "AssetManager.hpp"
 
-/// @class Style
-/// @brief Classe permettant de charger et de gérer les assets de style via un fichier de configuration.
 class Style {
-	
+
 private:
 
-	AssetManager& assetManager; ///< Référence vers le gestionnaire d'assets.
+	AssetManager& assetManager;
+	std::vector<std::string> loadedAssets; ///< Noms des assets chargés (utile pour reloadAssets).
 
-	/// @brief Initialise les assets en les chargeant depuis le fichier de configuration.
-	void initializeAssets() {
-		loadAssetsFromFile();
-	}
-
-	/// @brief Supprime les assets chargés.
-	void removeAssets() {
-		removeAssetsFromFile();
-	}
-
-	inline std::string getExeDir() {
+	static std::string getExeDir() {
 		char path[MAX_PATH];
 		GetModuleFileNameA(NULL, path, MAX_PATH);
 		std::string p(path);
 		return p.substr(0, p.find_last_of("\\/"));
 	}
 
-	/// @brief Charge les assets depuis le fichier "Style.txt" en fonction de leurs types (couleur, texture, police ou uvmesh).
+	template <typename T>
+	void registerAsset(const std::string& name, T* asset) {
+		assetManager.addAsset(name, asset);
+		loadedAssets.push_back(name);
+	}
+
 	void loadAssetsFromFile() {
-		std::string basePath = getExeDir() + "\\Ressources\\";
+		const std::string basePath = getExeDir() + "\\Ressources\\";
 		std::ifstream file(basePath + "Style.txt");
 		if (!file) {
-			std::cerr << "Erreur : Impossible d'ouvrir Style.txt at " + basePath + "Style.txt\n";
+			std::cerr << "Erreur : Impossible d'ouvrir " << basePath << "Style.txt\n";
 			return;
 		}
+
 		std::string line;
 		while (std::getline(file, line)) {
 			if (line == "Color:") {
@@ -49,88 +44,39 @@ private:
 					std::istringstream ss(line);
 					std::string name;
 					int r, g, b, a;
-					if (ss >> name >> r >> g >> b >> a) {
-						assetManager.addAsset(name, new Color(r, g, b, a));
-					}
+					if (ss >> name >> r >> g >> b >> a)
+						registerAsset(name, new Color(r, g, b, a));
 				}
 			} else if (line == "Texture:") {
 				while (std::getline(file, line) && !line.empty()) {
 					std::istringstream ss(line);
 					std::string name, texturePath;
-					if (ss >> name >> texturePath) {
-							assetManager.addAsset(name, new Texture(basePath + texturePath));
-					}
-    		}
-			} else if (line == "Font:") {
-				while (std::getline(file, line) && !line.empty()) {
-						std::istringstream ss(line);
-						std::string name, fontPath;
-						int fontSize = 12;
-						if (ss >> name >> fontPath >> fontSize) {
-								assetManager.addAsset(name, new Font(basePath + fontPath, fontSize));
-						}
-				}
-			}
-		}
-		file.close();
-	}
-
-	/// @brief Supprime les assets listés dans le fichier "Style.txt".
-	void removeAssetsFromFile() {
-		std::string basePath = getExeDir() + "\\";
-		std::ifstream file(basePath + "Style.txt");
-		if (!file) {
-			std::cerr << "Erreur : Impossible d'ouvrir Style.txt at " + basePath + "Style.txt\n";
-			return;
-		}
-
-		std::string line;
-		while (std::getline(file, line)) {
-			if (line == "Color:") {
-				while (std::getline(file, line) && !line.empty()) {
-					std::istringstream ss(line);
-					std::string name;
-					if (ss >> name) {
-						assetManager.removeAsset(name);
-					}
-				}
-			} else if (line == "Texture:") {
-				while (std::getline(file, line) && !line.empty()) {
-					std::istringstream ss(line);
-					std::string name;
-					if (ss >> name) {
-						assetManager.removeAsset(name);
-					}
+					if (ss >> name >> texturePath)
+						registerAsset(name, new Texture(basePath + texturePath));
 				}
 			} else if (line == "Font:") {
 				while (std::getline(file, line) && !line.empty()) {
 					std::istringstream ss(line);
-					std::string name;
-					if (ss >> name) {
-						assetManager.removeAsset(name);
-					}
+					std::string name, fontPath;
+					int fontSize = 12;
+					if (ss >> name >> fontPath >> fontSize)
+						registerAsset(name, new Font(basePath + fontPath, fontSize));
 				}
 			}
 		}
-		file.close();
 	}
 
 public:
 
-	/// @brief Constructeur de la classe Style, initialisant les assets à partir du gestionnaire d'assets.
-	/// @param assetManager Référence vers l'AssetManager pour la gestion des assets.
-	Style(AssetManager& assetManager) : assetManager(assetManager) {
-		initializeAssets();
+	explicit Style(AssetManager& assetManager) : assetManager(assetManager) {
+		loadAssetsFromFile();
 	}
 
-	/// @brief Destructeur de la classe Style.
-	~Style() {
-		removeAssets();
-	}
-
-	/// @brief Recharge les assets en les supprimant puis en les réinitialisant.
+	/// @brief Supprime les assets précédemment chargés puis relit Style.txt.
 	void reloadAssets() {
-		removeAssets();
-		initializeAssets();
+		for (const auto& name : loadedAssets)
+			assetManager.removeAsset(name);
+		loadedAssets.clear();
+		loadAssetsFromFile();
 	}
 };

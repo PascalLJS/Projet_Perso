@@ -26,7 +26,6 @@ private:
   DialogManager *dialogManager;
 	
 public:
-
   void transitLine(std::map<string, Vector2i> transition, std::map<string, Vector2i> destination, std::map<string, Line*> components){
     for(auto transitVector : transition) {
       if(destination[transitVector.first] != components[transitVector.first]->getPosStart()){

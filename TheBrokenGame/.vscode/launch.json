@@ -5,7 +5,7 @@
 			"name": "Debug",
 			"type": "cppvsdbg",
 			"request": "launch",
-			"program": "TheBrokenChristmas/TheBrokenChristmas.exe",
+			"program": "TheBrokenChristmas/Game/TheBrokenChristmas.exe",
 			"args": [],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
