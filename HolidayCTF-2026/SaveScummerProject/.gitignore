@@ -1,0 +1,20 @@
+# Godot 4
+.godot/
+
+# Godot 3 (only if you use it)
+.import/
+
+# Generated / local files
+*.translation
+export_presets.cfg
+.mono/
+data_*/
+mono_crash.*.json
+
+# Exports
+build/
+exports/
+
+# OS junk
+.DS_Store
+Thumbs.db
